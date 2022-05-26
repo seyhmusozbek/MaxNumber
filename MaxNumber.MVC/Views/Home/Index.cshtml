@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <input type="text" id="numbers" class="form-control" placeholder="Lütfen girdiğiniz numaraları virgül ile ayırınız." onkeyup="validate(event)" />
+<br />
+    
+    <button onclick="send()" id="sendButton" disabled class="btn btn-danger">Gönder</button>
+</div>
+<br />
+<div id="resultAlert" style="display:none" class="alert alert-success">Sonuç: <b id="resultB"></b></div>
+
+<script type="text/javascript">
+    let numArr;
+ let validate = (event) => {
+    numArr=event.target.value.replace(/\s/g, '').split(',');
+    let btn =$('#sendButton');
+
+    for(let i = 0; i < numArr.length;i++){
+        if(isNaN(numArr[i])||numArr[i]==''){
+            btn.attr('disabled',true);
+            btn.removeClass( "btn-success" ).addClass( "btn-danger" );
+            return;
+        }
+    }
+        btn.removeClass( "btn-danger" ).addClass( "btn-success" );
+        $('#sendButton').attr('disabled',false);
+
+}
+
+let send = () => {
+    console.log(numArr);
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        url: 'http://localhost:5000/MaxNumber',
+        data: JSON.stringify(numArr),
+        success: function (data) {
+            console.log(data);
+            $('#resultB').text(data);
+            $('#resultAlert').css('display','block');
+
+        }
+    });
+}
+
+</script>
